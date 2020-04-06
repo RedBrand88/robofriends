@@ -4,6 +4,9 @@ I made this project from Andrei Neagoie's The Complete Junior to Senior Web Deve
 
 ## This was made with create-react-app
 
-If you want to check it out clone the repo
-run npm install in your terminal
+If you want to check it out clone the repo \
+cd into the directory and run
+```
+npm install
 run npm start
+```
