@@ -1,16 +1,30 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import CardList from '../Components/CardList';
 import Searchbox from '../Components/Searchbox';
 import Scroll from '../Components/Scroll';
 import './App.css';
 
+import { setSearchField } from '../actions';
+
+const mapStateToProps = state => {
+    return {
+        searchField: state.searchRobots.searchField
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onSearchFieldChange: (event) => dispatch(setSearchField(event.target.value))
+    }
+}
+
 class App extends Component {
     constructor() {
         super()
         this.state = {
-            //set robots to empty arrayr
-            robots: [],
-            searchField: ''
+            //set robots to empty array
+            robots: []
         }
     }
 
@@ -19,10 +33,6 @@ class App extends Component {
         fetch('https://jsonplaceholder.typicode.com/users')
             .then(res => res.json())
             .then(users => {this.setState({ robots: users })});
-    }
-
-    onSearchFieldChange = (e) => {
-        this.setState({ searchField: e.target.value});
     }
     
     render() {
@@ -41,4 +51,4 @@ class App extends Component {
     }
 }
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
