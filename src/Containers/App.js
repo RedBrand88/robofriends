@@ -5,50 +5,47 @@ import Searchbox from '../Components/Searchbox';
 import Scroll from '../Components/Scroll';
 import './App.css';
 
-import { setSearchField } from '../actions';
+import { setSearchField, fetchRobots } from '../actions';
 
 const mapStateToProps = state => {
     return {
-        searchField: state.searchField
+        searchField: state.searchRobots.searchField,
+        robots: state.fetchRobots.robots,
+        isPending: state.fetchRobots.isPending,
+        error: state.fetchRobots.error
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onSearchFieldChange: (event) => dispatch(setSearchField(event.target.value))
+        onSearchFieldChange: (event) => dispatch(setSearchField(event.target.value)),
+        onFetchRobots: () => dispatch(fetchRobots())
     }
 }
 
 class App extends Component {
-    constructor() {
-        super()
-        this.state = {
-            //set robots to empty array
-            robots: []
-        }
-    }
 
     //create method to fetch jsonplaceholder user data
     componentDidMount() {
-        fetch('https://jsonplaceholder.typicode.com/users')
-            .then(res => res.json())
-            .then(users => {this.setState({ robots: users })});
+        this.props.onFetchRobots();
     }
-    
+
     render() {
-        const { searchField, onSearchFieldChange } = this.props;
-        const filteredRobots = this.state.robots.filter(robot => {
+        const { searchField, onSearchFieldChange, robots, isPending } = this.props;
+        const filteredRobots = robots.filter(robot => {
             return robot.name.toLowerCase().includes(searchField.toLowerCase());
         });
-        return (
-            <div className='tc'>
-                <h1 className='f1'>Robofriends</h1>
-                <Searchbox searchChange={onSearchFieldChange}/>
-                <Scroll>
-                    <CardList robots={filteredRobots}/>
-                </Scroll>
-            </div>
-        );
+        return isPending ?
+            <h1>Loading...</h1> :
+            (
+                <div className='tc'>
+                    <h1 className='f1'>Robofriends</h1>
+                    <Searchbox searchChange={onSearchFieldChange} />
+                    <Scroll>
+                        <CardList robots={filteredRobots} />
+                    </Scroll>
+                </div>
+            );
     }
 }
 
